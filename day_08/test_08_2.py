@@ -5,7 +5,8 @@ from pathlib import Path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utilities.maps import (
-    MyMap,
+    M,
+    P,
 )
 
 input_path = Path(__file__).parent / "input.txt"
@@ -14,25 +15,23 @@ input = input_path.read_text()
 # --- Logic ---
 
 
-def find_reflects(
-    i: int, a: tuple[int, int], o: tuple[int, int], map: MyMap
-) -> set[tuple[int, int]]:
+def find_reflects(i: int, a: P, b: P, map: M) -> set[P]:
     x, y = (
-        o[0] + (o[0] - a[0]) * i,
-        o[1] + (o[1] - a[1]) * i,
+        b[0] + (b[0] - a[0]) * i,
+        b[1] + (b[1] - a[1]) * i,
     )
 
     if map.out(x, y):
         return set()
 
-    return find_reflects(i + 1, a, o, map).union({(x, y)})
+    return find_reflects(i + 1, a, b, map).union({(x, y)})
 
 
 def find_anti_nodes(
     i: int,
-    all: list[tuple[int, int]],
-    map: MyMap,
-) -> set[tuple[int, int]]:
+    all: list[P],
+    map: M,
+) -> set[P]:
     if i >= len(all):
         return set()
 
@@ -48,7 +47,7 @@ def find_anti_nodes(
 
 
 def logic(input: str) -> int:
-    map = MyMap(input)
+    map = M(input)
     antennas_by_type = map.list_points()
 
     antinodes = set()

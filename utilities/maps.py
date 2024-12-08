@@ -30,22 +30,10 @@ class Dir(Enum):
                 return "<"
 
 
-class Point:
-    def __init__(self, x: int, y: int):
-        self.x = x
-        self.y = y
-
-    def __str__(self):
-        return f"({self.x}, {self.y})"
-
-    def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
-
-    def __hash__(self):
-        return hash((self.x, self.y))
+P = tuple[int, int]
 
 
-class DirPoint:
+class DP:
     def __init__(self, x: int, y: int, dir: Dir):
         self.x = x
         self.y = y
@@ -72,7 +60,7 @@ class DirPoint:
         self.dir = self.dir.rotate_left()
 
     def point(self):
-        return Point(self.x, self.y)
+        return (self.x, self.y)
 
     def __str__(self):
         return f"({self.x}, {self.y}, {self.dir.value})"
@@ -84,34 +72,30 @@ class DirPoint:
         return hash((self.x, self.y, self.dir.value))
 
     def copy(self):
-        return DirPoint(self.x, self.y, self.dir)
+        return DP(self.x, self.y, self.dir)
 
 
-def get_map(raw: str, ignore=".") -> dict[tuple[int, int], str]:
-    result = {}
-    for y, line in enumerate(get_lines(raw)):
-        for x, c in enumerate(line):
-            if c == ignore:
-                continue
-            result[x, y] = c
-    return result
-
-
-class MyMap:
-    def __init__(self, input: str):
+class M:
+    def __init__(self, input: str, empty="."):
         lines = get_lines(input)
-
         self.height = len(lines)
         self.width = len(lines[0])
-        self.map = get_map(input)
+        self.empty = empty
+
+        self.map = {}
+        for y, line in enumerate(lines):
+            for x, c in enumerate(line):
+                if c == empty:
+                    continue
+                self.map[x, y] = c
 
     def get(self, x, y) -> str:
-        return self.map.get((x, y), ".")
+        return self.map.get((x, y), self.empty)
 
     def check(self, x, y, chars: set[str]) -> bool:
         return self.map.get((x, y), None) in chars
 
-    def list_points(self) -> dict[str, list[tuple[int, int]]]:
+    def list_points(self) -> dict[str, list[P]]:
         result = {}
         for x, y in self.map.keys():
             v = self.get(x, y)
@@ -119,7 +103,7 @@ class MyMap:
 
         return result
 
-    def merge(self, points: set[tuple[int, int]], value: str, down: bool = False):
+    def merge(self, points: set[P], value: str, down: bool = False):
         result = self.copy()
         for p in points:
             if down:
@@ -128,13 +112,13 @@ class MyMap:
                 result.map[p] = value
         return result
 
-    def set(self, x, y, value: str):
-        self.map[x, y] = value
+    def set(self, p: P, value: str):
+        self.map[p] = value
 
     def out(self, x: int, y: int) -> bool:
         return x < 0 or y < 0 or x >= self.width or y >= self.height
 
-    def find_one(self, char: str) -> tuple[int, int] | None:
+    def find_one(self, char: str) -> P | None:
         return next((p for p, c in self.map.items() if c == char), None)
 
     def get_lines(self) -> list[str]:
@@ -142,7 +126,7 @@ class MyMap:
         for y in range(self.height):
             line = ""
             for x in range(self.width):
-                line += self.map.get((x, y), ".")
+                line += self.map.get((x, y), self.empty)
             lines.append(line)
         return lines
 
@@ -150,7 +134,7 @@ class MyMap:
         return "\n".join(self.get_lines())
 
     def copy(self):
-        map_copy = MyMap.__new__(MyMap)
+        map_copy = M.__new__(M)
         map_copy.height = self.height
         map_copy.width = self.width
         map_copy.map = self.map.copy()

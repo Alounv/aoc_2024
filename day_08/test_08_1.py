@@ -4,9 +4,7 @@ from pathlib import Path
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from utilities.maps import (
-    MyMap,
-)
+from utilities.maps import M, P
 
 input_path = Path(__file__).parent / "input.txt"
 input = input_path.read_text()
@@ -16,9 +14,9 @@ input = input_path.read_text()
 
 def find_anti_nodes(
     i: int,
-    all: list[tuple[int, int]],
-    map: MyMap,
-) -> set[tuple[int, int]]:
+    all: list[P],
+    map: M,
+) -> set[P]:
     if i >= len(all):
         return set()
 
@@ -42,7 +40,7 @@ def find_anti_nodes(
 
 
 def logic(input: str) -> int:
-    map = MyMap(input)
+    map = M(input)
     antennas_by_type = map.list_points()
 
     antinodes = set()
