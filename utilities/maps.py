@@ -111,6 +111,23 @@ class MyMap:
     def check(self, x, y, chars: set[str]) -> bool:
         return self.map.get((x, y), None) in chars
 
+    def list_points(self) -> dict[str, list[tuple[int, int]]]:
+        result = {}
+        for x, y in self.map.keys():
+            v = self.get(x, y)
+            result.setdefault(v, []).append((x, y))
+
+        return result
+
+    def merge(self, points: set[tuple[int, int]], value: str, down: bool = False):
+        result = self.copy()
+        for p in points:
+            if down:
+                result.map[p] = result.map.get(p, value)
+            else:
+                result.map[p] = value
+        return result
+
     def set(self, x, y, value: str):
         self.map[x, y] = value
 
