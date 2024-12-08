@@ -5,7 +5,7 @@ from pathlib import Path
 
 from test_06_1 import get_guard, move_until_out
 
-from utilities.maps import DirPoint, MyMap
+from utilities.maps import DP, M
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -15,7 +15,7 @@ input = input_path.read_text()
 # --- Logic ---
 
 
-def move_to_obs(map: MyMap, p: DirPoint):
+def move_to_obs(map: M, p: DP):
     is_out = False
 
     while True:
@@ -34,11 +34,11 @@ def move_to_obs(map: MyMap, p: DirPoint):
     return p, is_out
 
 
-def has_loop(args: tuple[MyMap, DirPoint]) -> bool:
+def has_loop(args: tuple[M, DP]) -> bool:
     (map, guard) = args
     visited = set({guard})
 
-    def check(guard: DirPoint) -> bool:
+    def check(guard: DP) -> bool:
         next, is_out = move_to_obs(map, guard)
         if is_out:
             return False
@@ -53,16 +53,16 @@ def has_loop(args: tuple[MyMap, DirPoint]) -> bool:
 
 
 def logic(input: str) -> int:
-    map = MyMap(input)
+    map = M(input)
     guard = get_guard(map)
 
     visited = move_until_out(map, guard.copy())
 
     # for each position try to set an obstacle
-    args: list[tuple[MyMap, DirPoint]] = []
+    args: list[tuple[M, DP]] = []
     for p in visited:
         m = map.copy()
-        m.set(p.x, p.y, "O")
+        m.set(p, "O")
         args.append((m, guard.copy()))
 
     # this can be parallelize
@@ -89,7 +89,7 @@ def test_has_loop():
     #+----++..
     ......#O..
     """
-    map = MyMap(example)
+    map = M(example)
     guard = get_guard(map)
     assert has_loop((map, guard))
 
@@ -107,7 +107,7 @@ def test_has_loop_2():
     #O........
     ......#...
     """
-    map = MyMap(example)
+    map = M(example)
     guard = get_guard(map)
     assert has_loop((map, guard))
 
@@ -125,7 +125,7 @@ def test_has_loop_3():
     #.........
     ......#...
      """
-    map = MyMap(example)
+    map = M(example)
     guard = get_guard(map)
     assert not has_loop((map, guard))
 
