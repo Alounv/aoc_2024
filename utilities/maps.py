@@ -122,6 +122,26 @@ class M:
     def find_one(self, char: str) -> P | None:
         return next((p for p, c in self.map.items() if c == char), None)
 
+    def find_all(self, char: str) -> list[P]:
+        return [p for p, c in self.map.items() if c == char]
+
+    def get_neighbors(self, p: P, value: str | None = None) -> dict[P, str]:
+        deltas = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+        n: dict[P, str] = {}
+        for dx, dy in deltas:
+            x = p[0] + dx
+            y = p[1] + dy
+            if self.out(x, y):
+                continue
+
+            v = self.get(x, y)
+
+            if value and v != value:
+                continue
+
+            n[(x, y)] = v
+        return n
+
     def get_lines(self) -> list[str]:
         lines = []
         for y in range(self.height):
@@ -134,17 +154,28 @@ class M:
     def __str__(self):
         return "\n".join(self.get_lines())
 
-    def print(self):
+    def print(self, colors: dict[str, int] | None = None):
         print("\n")
-        print(
-            color(
-                str(self),
-                {
-                    ".": 0,
-                    "#": 1,
-                },
-            )
-        )
+
+        if colors is None:
+            print(str(self))
+        else:
+            spec = {
+                ".": 0,
+                "1": 1,
+                "2": 2,
+                "3": 3,
+                "4": 4,
+                "5": 5,
+                "6": 6,
+                "7": 7,
+                "8": 8,
+                "9": 9,
+                "0": 10,
+                "#": 11,
+            }
+            spec.update(colors)
+            print(color(str(self), spec))
 
     def copy(self):
         m = M.__new__(M)
