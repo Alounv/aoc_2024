@@ -33,6 +33,17 @@ class Dir(Enum):
 
 P = tuple[int, int]
 
+deltas = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+
+
+def get_neighbors(p: P) -> list[P]:
+    n: list[P] = []
+    for dx, dy in deltas:
+        x = p[0] + dx
+        y = p[1] + dy
+        n.append((x, y))
+    return n
+
 
 class DP:
     def __init__(self, x: int, y: int, dir: Dir):
@@ -126,11 +137,8 @@ class M:
         return [p for p, c in self.map.items() if c == char]
 
     def get_neighbors(self, p: P, value: str | None = None) -> dict[P, str]:
-        deltas = [(0, -1), (1, 0), (0, 1), (-1, 0)]
         n: dict[P, str] = {}
-        for dx, dy in deltas:
-            x = p[0] + dx
-            y = p[1] + dy
+        for x, y in get_neighbors(p):
             if self.out(x, y):
                 continue
 
