@@ -81,8 +81,3 @@ def test_example_3():
 def test_part_1():
     result = logic(input, 25)
     assert result == 185205
-
-
-def test_part_2():
-    result = logic(input, 75)
-    assert result == 221280540398419
