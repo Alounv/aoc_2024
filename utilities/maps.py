@@ -83,12 +83,19 @@ class M:
                     continue
                 self.dict[x, y] = c
 
+    @classmethod
+    def empty(cls, width: int, height: int) -> "M":
+        m = cls.__new__(cls)
+        m.height = height
+        m.width = width
+        m.dict = {}
+        return m
+
     def get(self, x, y) -> str:
         return self.dict.get((x, y)) or EMPTY
 
     def set_item(self, p: P, value: str):
-        x, y = p
-        self.dict.setdefault(p, value)
+        self.dict[p] = value
 
     def set_if_empty(self, p: P, value: str):
         x, y = p
