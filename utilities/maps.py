@@ -97,6 +97,25 @@ class M:
     def set_item(self, p: P, value: str):
         self.dict[p] = value
 
+    def remove_item(self, p: P):
+        del self.dict[p]
+
+    def switch(self, a: P, b: P):
+        dict = self.dict
+        a_exists = a in dict
+        b_exists = b in dict
+
+        if a_exists and b_exists:
+            dict[a], dict[b] = dict[b], dict[a]
+        elif a_exists and not b_exists:
+            v = dict[a]
+            dict[b] = v
+            del dict[a]
+        elif b_exists and not a_exists:
+            v = dict[b]
+            dict[a] = v
+            del dict[b]
+
     def set_if_empty(self, p: P, value: str):
         x, y = p
         if self.get(x, y) == EMPTY:
