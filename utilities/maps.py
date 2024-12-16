@@ -1,4 +1,5 @@
 from enum import Enum
+from heapq import heappop, heappush
 
 from utilities.colors import color
 from utilities.parse import get_lines
@@ -57,6 +58,11 @@ class DP:
     def turn_left(self):
         self.dir = self.dir.rotate_left()
 
+    def move(self, dir: Dir):
+        dx, dy = DELTAS[dir.value]
+        self.p = (self.p[0] + dx, self.p[1] + dy)
+        self.dir = dir
+
     def __str__(self):
         return f"({self.p}, {self.dir})"
 
@@ -93,6 +99,9 @@ class M:
 
     def get(self, x, y) -> str:
         return self.dict.get((x, y)) or EMPTY
+
+    def check(self, p: P, value: str) -> bool:
+        return p in self.dict and self.dict[p] == value
 
     def set_item(self, p: P, value: str):
         self.dict[p] = value
@@ -220,3 +229,26 @@ class M:
         m.width = self.width
         m.dict = self.dict.copy()
         return m
+
+
+class PriorityItem:
+    def __init__(self, value, priority: int):
+        self.item = value
+        self.priority = priority
+
+    def __lt__(self, other):
+        return self.priority < other.priority
+
+
+class PriorityQueue:
+    def __init__(self):
+        self.queue = []
+
+    def push(self, value, priority: int):
+        heappush(self.queue, PriorityItem(value, priority))
+
+    def pop(self):
+        return heappop(self.queue)
+
+    def is_empty(self) -> bool:
+        return len(self.queue) == 0
