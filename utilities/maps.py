@@ -199,6 +199,9 @@ class M:
     def __str__(self):
         return "\n".join(self.get_lines())
 
+    def end(self):
+        return self.width - 1, self.height - 1
+
     def print(self, colors: dict[str, int] = {}, clean: bool = False):
         if clean:
             print("\033[2J\033[H", end="")
@@ -242,7 +245,7 @@ class PriorityItem:
 
 class PriorityQueue:
     def __init__(self):
-        self.queue = []
+        self.queue: list[PriorityItem] = []
 
     def push(self, value, priority: int):
         heappush(self.queue, PriorityItem(value, priority))
