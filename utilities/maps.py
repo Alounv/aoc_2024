@@ -34,6 +34,7 @@ class Dir(Enum):
 
 P = tuple[int, int]
 
+
 DELTAS = [(0, -1), (1, 0), (0, 1), (-1, 0)]
 EMPTY = "."
 
