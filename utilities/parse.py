@@ -4,8 +4,10 @@ __all__ = ["get_lines"]
 def get_lines(raw: str) -> list[str]:
     return [line.strip() for line in raw.strip().split("\n")]
 
+
 def get_parts(raw: str) -> list[str]:
     return [part.strip() for part in raw.strip().split("\n\n")]
+
 
 def get_columns(lines: list[str]) -> list[str]:
     cols: list[str] = [""] * len(lines[0])
