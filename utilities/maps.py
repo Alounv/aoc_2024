@@ -39,6 +39,33 @@ DELTAS = [(0, -1), (1, 0), (0, 1), (-1, 0)]
 EMPTY = "."
 
 
+def move(
+    p: P,
+    dir: Dir,
+):
+    dx, dy = DELTAS[dir.value]
+    return (p[0] + dx, p[1] + dy)
+
+
+def dir_from_str(s: str):
+    match s:
+        case "^":
+            return Dir.up
+        case ">":
+            return Dir.right
+        case "v":
+            return Dir.down
+        case "<":
+            return Dir.left
+        case _:
+            raise ValueError(f"Invalid direction: {s}")
+
+
+def move_str(p: P, dir: str):
+    d = dir_from_str(dir)
+    return move(p, d)
+
+
 def get_neighbors(p: P) -> list[P]:
     n: list[P] = []
     for dx, dy in DELTAS:
